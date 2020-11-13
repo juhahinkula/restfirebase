@@ -3,8 +3,7 @@ import { AgGridColumn, AgGridReact } from 'ag-grid-react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import AddIcon from '@material-ui/icons/Add';
+import AddTodo from './AddTodo';
 
 import './App.css';
 import 'ag-grid-community/dist/styles/ag-grid.css';
@@ -24,6 +23,16 @@ function App() {
     .catch(err => console.error(err))
   }
 
+  const addTodo = (newTodo) => {
+    fetch('https://todolist-a1048.firebaseio.com/items/.json',
+    {
+      method: 'POST',
+      body: JSON.stringify(newTodo)
+    })
+    .then(response => fetchItems())
+    .catch(err => console.error(err))
+  }
+
   return (
     <div className="App">
       <AppBar position="static">
@@ -32,7 +41,8 @@ function App() {
             TodoList
           </Typography>
         </Toolbar>
-      </AppBar>      
+      </AppBar> 
+      <AddTodo addTodo={addTodo} />     
       <div className="ag-theme-material" style={ { height: 400, width: 600, margin: 'auto' } }>
         <AgGridReact rowData={todos}>
           <AgGridColumn sortable={true} filter={true} field='description' />
