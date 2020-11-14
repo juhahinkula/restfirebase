@@ -11,6 +11,7 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css';
 
 function App() {
   const [todos, setTodos] = useState([]);
+  const [keys, setKeys] = useState([]);
 
   useEffect(() => {
     fetchItems();
@@ -19,8 +20,15 @@ function App() {
   const fetchItems = () => {
     fetch('https://todolist-a1048.firebaseio.com/items/.json')
     .then(response => response.json())
-    .then(data => setTodos(Object.values(data)))
+    .then(data => addKeys(data))
     .catch(err => console.error(err))
+  }
+
+  // Add keys to the todo objects
+  const addKeys = (data) => {
+    const keys = Object.keys(data);
+    const valueKeys = Object.values(data).map((item, index) => Object.defineProperty(item, 'id', {value: keys[index]}));
+    setTodos(valueKeys);
   }
 
   const addTodo = (newTodo) => {
@@ -48,6 +56,7 @@ function App() {
           <AgGridColumn sortable={true} filter={true} field='description' />
           <AgGridColumn sortable={true} filter={true} field='date' />
           <AgGridColumn sortable={true} filter={true} field='priority' />
+          <AgGridColumn hide={true} sortable={true} filter={true} field='id' />
         </AgGridReact>
       </div>
     </div>
